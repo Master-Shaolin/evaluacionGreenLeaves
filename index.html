@@ -10,6 +10,9 @@
 	<link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 	<script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzN6Zvaa0bOnE-bTdsBWIP0Qv7pQO-aO0&libraries=places"
+        async defer>       
+    </script>
    
 	<script type="text/javascript" src="js/pikaday.js"></script>
 	<script type="text/javascript" src="js/document.js"></script>
@@ -34,10 +37,6 @@
 		<div class="contenedor-inputs" ng-controller="FechaCtrl">
 			<label>Fecha: </label>
 			<input type="text" name="fecha" id="datepicker" ng-model="user.date" readonly required>
-		</div>
-		<div class="contenedor-inputs">
-			<label>Ciudad y Estado: </label>
-			<input type="text" name="ciudad" id="autocomplete" placeholder="Introduce tu ciudad" ng-model="user.city" required>
 		</div>
 		<div class="contenedor-inputs" >
 			<input type="submit" value="Enviar" class="btn btn-default">
@@ -65,9 +64,6 @@
 					<li ng-show="form.fecha.$pristine">Selcciona una fecha</li>
 			    	<li ng-show="form.fecha.$dirty && form.fecha.$error.required">Selcciona una fecha</li>
 
-			    	<li ng-show="form.ciudad.$pristine">El campo de Ciudad y Estado está vacío</li>
-			    	<li ng-show="form.ciudad.$dirty && form.ciudad.$error.required">El campo de Ciudad y Estado está vacío</li>
-
 			    </ul>
 			    <p>Por favor, corriga los errores para continuar</p>
 			  </div>
@@ -82,31 +78,9 @@
 		</p>
 		<span>Atte.</span>
 		<span class="gl">Green Leaves</span>
-		<span class="lf">{{lugar}} a {{fecha}}</span>
+		<span class="lf">{{lugar}}, {{pais}}, {{temperatura}}°C a {{fecha}}</span>
 	</div>	
-	<script>
-      var autocomplete;
-
-      function initAutocomplete() {
-        // Create the autocomplete object, restricting the search to geographical
-        // location types.
-        autocomplete = new google.maps.places.Autocomplete(
-            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-            {types: ['(cities)']});
-
-        // When the user selects an address from the dropdown, populate the address
-        // fields in the form.
-        autocomplete.addListener('place_changed', fillInAddress);
-      }
-
-      function fillInAddress() {
-        // Get the place details from the autocomplete object.
-        var place = autocomplete.getPlace();
-      
-      }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzN6Zvaa0bOnE-bTdsBWIP0Qv7pQO-aO0&libraries=places&callback=initAutocomplete"
-        async defer>       
-    </script>
+	<div class="imgLoad" ng-show="loadShow">	
+	</div>
 </body>
 </html>

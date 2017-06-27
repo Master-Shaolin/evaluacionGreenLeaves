@@ -1,10 +1,11 @@
 var myApp = angular.module('MyApp', ['ui.bootstrap']);
 
-myApp.controller('FechaCtrl', [function() {
+myApp.controller('FechaCtrl', ['$scope',function($scope) {
     angular.element(document).ready(function () {
 
     	document.getElementById('myModal').removeAttribute('style');
     	document.getElementsByClassName('msj-container')[0].removeAttribute('style');
+
         var monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", 
 		"Sep", "Oct", "Nov", "Dic"];
 
@@ -15,15 +16,13 @@ myApp.controller('FechaCtrl', [function() {
 	        minDate: new Date((today.getFullYear() - 100), 0, 1),
         	maxDate: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
 		    toString(date, format) {
-		        // you should do formatting based on the passed format,
-		        // but we will just return 'D/M/YYYY' for simplicity
+
 		        const day = date.getDate();
 		        const month = monthNames[date.getMonth()];
 		        const year = date.getFullYear();
 		        return `${day}-${month}-${year}`;
 		    },
 		    parse(dateString, format) {
-		        // dateString is the result of `toString` method
 		        const parts = dateString.split('/');
 		        const day = parseInt(parts[0], 10);
 		        const month = parseInt(parts[1] - 1, 10);
@@ -38,17 +37,43 @@ myApp.controller('FechaCtrl', [function() {
 				    weekdaysShort : ['Do','Lu','Ma','Mi','Ju','Vi','Sa']
 				}
     	});
-
-
+	   	
     });
 }]);
 
-myApp.controller('formCtrl', ['$scope','$timeout' ,function($scope, $timeout) {
+myApp.controller('formCtrl', ['$scope','$timeout','$http',function($scope, $timeout,$http) {
+
+		$scope.geolocate= function() {
+	        if (navigator.geolocation) {
+	          navigator.geolocation.getCurrentPosition(function(position) {
+	            var geolocation = {
+	              lat: position.coords.latitude,
+	              lng: position.coords.longitude
+	            };
+
+	            var req = {
+					method: 'GET',
+					url: 'http://api.openweathermap.org/data/2.5/weather?lat='+geolocation.lat+'&lon='+geolocation.lng+'&units=metric&appid=b55deae1d0d7b31fbdba030b4a9f30fc'
+				}
+
+				$http(req).then(function(response){
+					$scope.lugar = response.data.name;				  	
+				  	$scope.pais = response.data.sys.country;
+				    $scope.temperatura = response.data.main.temp;
+				});
+	            
+	          });
+	        }
+	      }
+
+	    $scope.geolocate();
+
 
 	$scope.numTel = /^\+?\d{2}[- ]?\d{3}[- ]?\d{5}$/; 
 	$scope.active = true;
 	$scope.formShow = true;
 	$scope.msjShow = false;
+	$scope.loadShow = false;
 
 	$scope.showModal = function() {
 		$scope.active = false;
@@ -64,24 +89,20 @@ myApp.controller('formCtrl', ['$scope','$timeout' ,function($scope, $timeout) {
 			var email = angular.element( document.querySelector( '#email' ) ).val();
 			var tel = angular.element( document.querySelector( '#telefono' ) ).val();
 			var fecha = angular.element( document.querySelector( '#datepicker' ) ).val();
-			var lugar = angular.element( document.querySelector( '#autocomplete' ) ).val();
-
-		   console.log(nombre, email,tel,fecha,lugar);
 
 		   $scope.nombre = nombre;
 		   $scope.email = email;
-		   $scope.lugar = lugar;
 		   $scope.fecha = fecha;
 
 		   $scope.formShow = false;
 
-		   $timeout(function(){$scope.msjShow = true},500);
-		   
+		   $timeout(function(){$scope.loadShow = true},50);
+		   $timeout(function(){$scope.loadShow = false},2000);
 
+		   $timeout(function(){$scope.msjShow = true},2100);
 
 		}else{
 			$scope.showModal();
-			console.log("No Valid");
 		}
 	};
 }]);

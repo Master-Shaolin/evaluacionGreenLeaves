@@ -75,6 +75,7 @@
 .contenedor-inputs input[type="submit"]{
 	margin: 30px 50%;
 	color: #237FD4;
+	box-shadow: none;
 }
 
 /* The Modal (background) */
@@ -154,4 +155,12 @@
 
 .msj-container .lf{
 	font-style: italic;
+}
+
+.imgLoad{
+	width: 65px;
+	height: 65px;
+	background: transparent url('../img/loader.gif') no-repeat;
+	position: absolute;
+	margin: 30px 45%;
 }
