@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app="MyApp">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/estilos.css">
+	<link rel="stylesheet" type="text/css" href="css/pikaday.css">
+	<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:500,500i,700,900" rel="stylesheet">
+	<link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.js"></script>
+   
+	<script type="text/javascript" src="js/pikaday.js"></script>
+	<script type="text/javascript" src="js/document.js"></script>
+</head>
+<body ng-controller="formCtrl">
+	<div class="header">
+		<h1>Green Leaves</h1>
+	</div>	
+	<form name="form" ng-submit="submitForm(form)" novalidate ng-show="formShow">
+		<div class="contenedor-inputs">
+			<label>Nombre: </label>
+			<input type="text" name="nombre" ng-model="user.name" ng-minlength="2" required id="nombre">
+		</div>
+		<div class="contenedor-inputs">
+			<label>E-mail: </label>
+			<input type="email" name="email" ng-model="user.email" required id="email">
+		</div>
+		<div class="contenedor-inputs" >
+			<label>Teléfono: </label>
+			<input type="text" name="telefono" ng-model="user.tel" ng-minlength="10" required ng-pattern="numTel" placeholder="+52-xxx-xxxxx" id="telefono">
+		</div>
+		<div class="contenedor-inputs" ng-controller="FechaCtrl">
+			<label>Fecha: </label>
+			<input type="text" name="fecha" id="datepicker" ng-model="user.date" readonly required>
+		</div>
+		<div class="contenedor-inputs">
+			<label>Ciudad y Estado: </label>
+			<input type="text" name="ciudad" id="autocomplete" placeholder="Introduce tu ciudad" ng-model="user.city" required>
+		</div>
+		<div class="contenedor-inputs" >
+			<input type="submit" value="Enviar" class="btn btn-default">
+
+			<div id="myModal" class="modal" ng-hide="active" style="opacity: 0">
+			<div class="modal-content">
+			    <div class="modal-head">
+			    	Contacto
+			    	<span class="close" ng-click="hideModal()">&times;</span>
+			    </div>	    
+			    <p>Se encontraron los siguientes errores en sus datos de contacto:</p>
+			    <ul>
+			    	<li ng-show="form.nombre.$pristine">El campo de nombre está vacío</li>
+			    	<li ng-show="form.nombre.$dirty && form.nombre.$error.required">El campo de nombre está vacío</li> 	
+			    	<li ng-show="form.nombre.$dirty && form.nombre.$error.minlength">El nombre es muy corto</li>
+			    	<li ng-show="form.email.$pristine">El campo de e-mail está vacío</li>
+			    	<li ng-show="form.email.$dirty && form.email.$error.required">El campo de e-mail está vacío</li>
+			    	<li ng-show="form.email.$dirty && form.email.$error.email" >El e-mail ingresado no es válido</li>
+
+			    	<li ng-show="form.telefono.$pristine">El campo de teléfono está vacío</li>
+			    	<li ng-show="form.telefono.$dirty && form.telefono.$error.required">El campo de teléfono está vacío</li>
+			    	<li ng-show="form.telefono.$dirty && form.telefono.$error.minlength" >Teléfono no valido, intenta agregar el código de país o lada</li>	
+					<li ng-show="form.telefono.$error.pattern && !form.telefono.$error.minlength">Teléfono no valido</li>
+
+					<li ng-show="form.fecha.$pristine">Selcciona una fecha</li>
+			    	<li ng-show="form.fecha.$dirty && form.fecha.$error.required">Selcciona una fecha</li>
+
+			    	<li ng-show="form.ciudad.$pristine">El campo de Ciudad y Estado está vacío</li>
+			    	<li ng-show="form.ciudad.$dirty && form.ciudad.$error.required">El campo de Ciudad y Estado está vacío</li>
+
+			    </ul>
+			    <p>Por favor, corriga los errores para continuar</p>
+			  </div>
+			</div>
+		</div>
+	</form>
+	<div class="msj-container" ng-show="msjShow" style="opacity: 0">
+		<p>Estimado <strong>{{nombre}}</strong></p>
+		<p>
+			Hemos recibido sus datos y nos pondremos en contacto con usted a la brevedad posible. Enviaremos
+			un correo con información a su cuenta: <a href="">{{email}}</a>
+		</p>
+		<span>Atte.</span>
+		<span class="gl">Green Leaves</span>
+		<span class="lf">{{lugar}} a {{fecha}}</span>
+	</div>	
+	<script>
+      var autocomplete;
+
+      function initAutocomplete() {
+        // Create the autocomplete object, restricting the search to geographical
+        // location types.
+        autocomplete = new google.maps.places.Autocomplete(
+            /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+            {types: ['(cities)']});
+
+        // When the user selects an address from the dropdown, populate the address
+        // fields in the form.
+        autocomplete.addListener('place_changed', fillInAddress);
+      }
+
+      function fillInAddress() {
+        // Get the place details from the autocomplete object.
+        var place = autocomplete.getPlace();
+      
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzN6Zvaa0bOnE-bTdsBWIP0Qv7pQO-aO0&libraries=places&callback=initAutocomplete"
+        async defer>       
+    </script>
+</body>
+</html>
